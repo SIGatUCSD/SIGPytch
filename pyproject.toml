@@ -3,7 +3,7 @@ requires = ["setuptools>=67.4.0","numpy>=1.22.0","pandas>=1.4.0"]
 build-backend = "setuptools.build_meta"
 [project]
 name = "sigpytch"
-version = "0.0.1"
+version = "1.0.0"
 authors = [
   { name="Pranay Jha", email="pranay.jha@gmail.com" },
   { name="Shaurya Raswan", email="shauryaraswan1@gmail.com" },
