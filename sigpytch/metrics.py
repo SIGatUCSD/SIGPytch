@@ -32,7 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import numpy as np
 import pandas as pd
 
-from periods import P
+from .periods import P
 
 def rolling_sharpe(daily_returns: pd.Series,
                    risk_free_rate: pd.Series, window: int) -> pd.Series:
