@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=67.4.0"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "sigpytch"
+version = "0.0.1"
+authors = [
+  { name="Pranay Jha", email="pranay.jha@gmail.com" },
+]
+description = "Quantitative models and metrics used in the SIG at UCSD quarterly stock pitches."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: BSD-3 License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/SustainableInvestmentGroupUCSD/SIGPytch"
+"Bug Tracker" = "https://github.com/SustainableInvestmentGroupUCSD/SIGPytch/issues"
