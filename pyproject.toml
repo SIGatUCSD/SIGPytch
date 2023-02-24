@@ -6,6 +6,7 @@ name = "sigpytch"
 version = "0.0.1"
 authors = [
   { name="Pranay Jha", email="pranay.jha@gmail.com" },
+  { name="Shaurya Raswan", email="shauryaraswan1@gmail.com" },
 ]
 description = "Quantitative models and metrics used in the SIG at UCSD quarterly stock pitches."
 readme = "README.md"
