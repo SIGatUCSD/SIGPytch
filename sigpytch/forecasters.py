@@ -50,25 +50,25 @@ class LSTMForecaster():
 
         self.__scaler = MinMaxScaler(feature_range=(-1, 1))
 
-    def __setup_model(self, Y: np.ndarray):
+    def __setup_model(self):
         self.model = Sequential()
         self.model.add(LSTM(self.__lags, input_shape=(self.__lags, 1)))
         self.model.add(Dense(self.forecast_len)) # output layer
         self.model.compile(optimizer="adam", loss="mse")
-        self.model.summary()
 
     def __prepare_data(self, Y: pd.Series, test: bool = False):
         Y = np.array(Y).reshape((-1, 1))
-        Y_scaled = self.__scaler.fit_transform(Y)
         
         n_fut = self.forecast_len
         n_past = self.__lags
         period = n_fut + n_past
 
         if test:
-            idx_start = len(Y) - n_fut - n_past # 1260 - 252 - 63 = 945
+            Y_scaled = self.__scaler.transform(Y)
+            idx_start = len(Y) - n_fut - n_past
             n_input = 1
         else:
+            Y_scaled = self.__scaler.fit_transform(Y)
             train_len = len(Y) - self.forecast_len
             Y_scaled = Y_scaled[ : , :train_len]
             idx_start = 0
@@ -95,6 +95,7 @@ class LSTMForecaster():
 
         X_train, Y_train = self.__prepare_data(self.__series)
         if self.model is None: self.__setup_model(Y_train)
+        self.model.summary()
         self.model.fit(X_train, Y_train, epochs=epochs)
         
         X_test, Y_test = self.__prepare_data(self.__series, test=True)
