@@ -16,7 +16,7 @@ pip install sigpytch
 
 ## Requirements
 This library requires the following dependencies:
-  - [pandas](https://pandas.pydata.org/getting_started)>1.4.0
+  - [pandas](https://pandas.pydata.org/getting_started)>=1.4.0
   - [sckikit-learn](https://scikit-learn.org/stable/install)>=1.1.13
   - [tensorflow](https://www.tensorflow.org/install)>=2.11.0
 
