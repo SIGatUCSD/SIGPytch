@@ -1,11 +1,30 @@
 # SIGPytch
 Quantitative models and metrics used in the SIG at UCSD quarterly stock pitches.
-## Install
-`pip install sigpytch`
+
+## Table of Contents
+- [Installation](#installation)
+- [Requirements](#requirements)
+- [Metrics](#metrics)
+- [Models](#models)
+- [Contributing](#contributing)
+
+## Installation
+```
+pip install sigpytch
+```
+
 ## Requirements
-This project requires the following libraries:
-- [numpy](https://numpy.org/news/#releases)
-- [pandas](https://pandas.pydata.org/)
+This library requires the following dependencies:
+- [sckikit-learn](https://scikit-learn.org/stable/install)>=1.1.13
+- [tensorflow](https://www.tensorflow.org/install)>=2.11.0
+
 ## Metrics
-- Rolling Sharpe
+### `sigpytch.metrics`
+  - `rolling_sharpe`
+  
 ## Models
+### `sigpytch.forecasters`
+  - `LSTMForecaster`
+  
+## Contributing
+Reach out to Pranay to be added as a contributor to this repository.
