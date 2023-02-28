@@ -1,3 +1,4 @@
+![PyPI](https://img.shields.io/pypi/v/sigpytch)
 # SIGPytch
 Quantitative models and metrics used in the SIG at UCSD quarterly stock pitches.
 
