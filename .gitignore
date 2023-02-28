@@ -1,2 +1,4 @@
 dist/
 sigpytch.egg-info/
+*.ipynb
+__pycache__/
