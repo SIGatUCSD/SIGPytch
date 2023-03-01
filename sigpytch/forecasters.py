@@ -94,7 +94,7 @@ class LSTMForecaster():
         self.__lags = lags
 
         X_train, Y_train = self.__prepare_data(self.__series)
-        if self.model is None: self.__setup_model(Y_train)
+        if self.model is None: self.__setup_model()
         self.model.summary()
         self.model.fit(X_train, Y_train, epochs=epochs)
         
