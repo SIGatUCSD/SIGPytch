@@ -1,35 +1,20 @@
+from IPython.display import display
+
+
 import os
 os.environ["RD_LIB_CONFIG_PATH"] = "./"
 
-import yfinance as yf
-import matplotlib.pyplot as plt
-from sigpytch import metrics
 import refinitiv.data as rd
 
-rd.open_session()
-
-rd.open_session(name='platform.rdp')
-
-rd.open_session(config_name="./refinitiv-data.config.json")
-
-df, err = rd.get_data(['NVDA'])
-print(df)
-
-df_close = df.history(period='5y')['Close']
+import pandas as pd
+import numpy as np
 
 
-df_returns = df.pct_change().dropna()
 
-irx = yf.Ticker('^IRX')
-thirteen_wk_yield = irx.history(period='5y')['Close'][1:] * 0.01
+rd.open_session(config_name="./tests/refinitiv-data.config.json")
 
-df_rs = metrics.rolling_sharpe(daily_returns=df_returns, risk_free_rate=thirteen_wk_yield, window=6)
-print(df_rs)
+apple = rd.get_history(universe="AAPL.O")
+display(apple)
 
-plt.figure(figsize=(18, 5))
-plt.title("6m Rolling Sharpe Ratio - NVDA")
-plt.xlabel("Date")
-plt.ylabel("Sharpe ratio")
-plt.plot(df_rs)
 
-plt.show()
+rd.close_session()
