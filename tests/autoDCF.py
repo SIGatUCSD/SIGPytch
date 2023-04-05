@@ -18,7 +18,7 @@ rd.open_session(config_name="./tests/refinitiv-data.config.json")
 
 ticker = "AAPL.O"
 
-hist = rd.get_history(universe="UST1YT=RR", start="2013-04-02", end="2023-04-02")
+hist = rd.get_history(universe="US5YT=RR", start="2013-04-02", end="2023-04-02")
 
 display(hist)
 
@@ -96,7 +96,7 @@ class DCF:
 
   def wacc(self):
     # treasury yield for risk free rate
-    tnx = rd.get_history(universe="UST1YT=RR", start="2013-04-02", end=date_time)
+    tnx = rd.get_history(universe="US5YT=RR", start="2013-04-02", end=date_time)
     rfr = tnx.info.get('previousClose') * 0.01
     # beta
     b = rd.get_data(universe=[ticker], fields=["TR.WACCBeta"])
