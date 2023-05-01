@@ -25,3 +25,19 @@ def rolling_sharpe(daily_returns: pd.Series,
     # Compute rolling Sharpe ratio: D-bar / sigma
     rolling_sharpe_ratio = (avg_diff_return / periodized_volatility).dropna()
     return rolling_sharpe_ratio
+
+def max_drawdown(daily_returns: pd.Series, window: int = 252) -> pd.Series:
+    """
+    Computes the max drawdown for a given ticker.
+    
+    Parameters:
+        daily_returns (pd.Series): Daily returns of the given ticker 
+        window (int): Window size in trading days
+    Returns:
+        pd.Series: Max drawdown
+    """
+    # Compute drawdown based on max price in window
+    roll_max = daily_returns.rolling(window, min_periods=1).max()
+    drawdown = daily_returns/roll_max - 1.0
+    max_drawdown = drawdown.rolling(window, min_periods=1).min()
+    return max_drawdown

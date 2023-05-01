@@ -3,4 +3,4 @@ sigpytch.egg-info/
 *.ipynb
 __pycache__/
 .venv/
-refinitiv-data.config.json
+tests/refinitiv-data.config.json
