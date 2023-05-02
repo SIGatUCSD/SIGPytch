@@ -92,6 +92,9 @@ def volatility(price_data: pd.Series, window_width: int, window_index: int = 0) 
     Returns:
         float: Volatility of the price over the given window
     """
+    if(window_index+window_width > len(price_data)):
+        raise Exception("Invalid window width and/or index. Window outside price data series...")
+    
     av_returns = return_average(price_data, window_width, window_index)
     dly_returns = return_daily(price_data, window_width, window_index)
     T = len(dly_returns)
