@@ -43,6 +43,16 @@ def max_drawdown(daily_returns: pd.Series, window: int = 252) -> pd.Series:
     return max_drawdown
 
 def volatility(price_data: pd.Series, window_width: int, window_index: int = 0) -> float:
+    """
+    Computes volatility over some window of price data
+    
+    Parameters:
+        price_data (pd.Series): Daily price data
+        window_width (int): Window size in trading days
+        window_index (int): Window start trading day
+    Returns:
+        float: Volatility of the price over the given window
+    """
     av_returns = return_average(price_data, window_width, window_index)
     dly_returns = return_daily(price_data, window_width, window_index)
     T = len(dly_returns)
