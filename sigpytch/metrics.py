@@ -44,7 +44,7 @@ def max_drawdown(daily_returns: pd.Series, window: int = 252) -> pd.Series:
 
 def return_average(price_data: pd.Series, window_width: int, window_index: int = 0) -> float:
     """
-    Computes average returns over a period
+    Computes average returns over a period. O(1)
     
     Parameters:
         price_data (pd.Series): Daily price data
@@ -59,7 +59,7 @@ def return_average(price_data: pd.Series, window_width: int, window_index: int =
 
 def return_daily(price_data: pd.Series, window_width: int, window_index: int = 0) -> pd.Series:
     """
-    Computes daily returns over a period
+    Computes daily returns over a period O(window_width)
     
     Parameters:
         price_data (pd.Series): Daily price data
@@ -84,7 +84,7 @@ def return_daily(price_data: pd.Series, window_width: int, window_index: int = 0
 
 def volatility(price_data: pd.Series, window_width: int, window_index: int = 0) -> float:
     """
-    Computes volatility over some window of price data
+    Computes volatility over some window of price data. O(window_width)
     
     Parameters:
         price_data (pd.Series): Daily price data
@@ -99,9 +99,7 @@ def volatility(price_data: pd.Series, window_width: int, window_index: int = 0) 
     av_returns = return_average(price_data, window_width, window_index)
     dly_returns = return_daily(price_data, window_width, window_index)
     T = window_width
-    sigma = 0
-    for daily_return in dly_returns:
-        sigma += ((daily_return - av_returns)**2)/T
+    sigma = dly_returns.apply(lambda daily_return: ((daily_return - av_returns)**2)/T).sum()
     return sigma
     
 def sharpe_ratio(price_data_asset: pd.Series, price_data_benchmark: pd.Series, window_width: int, window_index: int = 0) -> float:
