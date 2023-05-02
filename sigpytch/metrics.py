@@ -80,3 +80,23 @@ def return_daily(price_data: pd.Series, window_width: int, window_index: int = 0
             continue
         o.append((daily_price-prev_daily_price)/prev_daily_price)
     return pd.Series(data=o)
+
+def volatility(price_data: pd.Series, window_width: int, window_index: int = 0) -> float:
+    """
+    Computes volatility over some window of price data
+    
+    Parameters:
+        price_data (pd.Series): Daily price data
+        window_width (int): Window size in trading days
+        window_index (int): Window start trading day
+    Returns:
+        float: Volatility of the price over the given window
+    """
+    av_returns = return_average(price_data, window_width, window_index)
+    dly_returns = return_daily(price_data, window_width, window_index)
+    T = len(dly_returns)
+    sigma = 0
+    for daily_return in dly_returns:
+        sigma += ((daily_return - av_returns)**2)/T
+    return sigma
+    
