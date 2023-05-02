@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from .periods import P
+from periods import P
 
 def rolling_sharpe(daily_returns: pd.Series,
                    risk_free_rate: pd.Series, window: int) -> pd.Series:
@@ -55,7 +55,7 @@ def return_average(price_data: pd.Series, window_width: int, window_index: int =
     """
     if(window_index+window_width > len(price_data)):
         raise Exception("Invalid window width and/or index. Window outside price data series...")
-    return (price_data.index(window_index+window_width) - price_data.index(window_index))/price_data.index(window_index)
+    return (price_data[window_index+window_width - 1] - price_data[window_index])/price_data[window_index]
 
 def return_daily(price_data: pd.Series, window_width: int, window_index: int = 0) -> pd.Series:
     """
@@ -80,4 +80,3 @@ def return_daily(price_data: pd.Series, window_width: int, window_index: int = 0
             continue
         o.append((daily_price-prev_daily_price)/prev_daily_price)
     return pd.Series(data=o)
-
