@@ -56,3 +56,28 @@ def return_average(price_data: pd.Series, window_width: int, window_index: int =
     if(window_index+window_width > len(price_data)):
         raise Exception("Invalid window width and/or index. Window outside price data series...")
     return (price_data.index(window_index+window_width) - price_data.index(window_index))/price_data.index(window_index)
+
+def return_daily(price_data: pd.Series, window_width: int, window_index: int = 0) -> pd.Series:
+    """
+    Computes daily returns over a period
+    
+    Parameters:
+        price_data (pd.Series): Daily price data
+        window_index (int): Start index of the window
+        window_width (int): Width of the window
+    Returns:
+        pd.Series: Daily returns over the provided window
+    """
+    if(window_index+window_width > len(price_data)):
+        raise Exception("Invalid window width and/or index. Window outside price data series...")
+    
+    o = []
+
+    prev_daily_price = -1
+    for daily_price in price_data:
+        if(prev_daily_price < 0):
+            prev_daily_price = daily_price
+            continue
+        o.append((daily_price-prev_daily_price)/prev_daily_price)
+    return pd.Series(data=o)
+
