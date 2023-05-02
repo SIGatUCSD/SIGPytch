@@ -41,3 +41,18 @@ def max_drawdown(daily_returns: pd.Series, window: int = 252) -> pd.Series:
     drawdown = daily_returns/roll_max - 1.0
     max_drawdown = drawdown.rolling(window, min_periods=1).min()
     return max_drawdown
+
+def return_average(price_data: pd.Series, window_width: int, window_index: int = 0) -> float:
+    """
+    Computes average returns over a period
+    
+    Parameters:
+        price_data (pd.Series): Daily price data
+        window_index (int): Start index of the window
+        window_width (int): Width of the window
+    Returns:
+        float: Average return over a provided window
+    """
+    if(window_index+window_width > len(price_data)):
+        raise Exception("Invalid window width and/or index. Window outside price data series...")
+    return (price_data.index(window_index+window_width) - price_data.index(window_index))/price_data.index(window_index)
