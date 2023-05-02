@@ -70,8 +70,6 @@ def return_daily(price_data: pd.Series, window_width: int, window_index: int = 0
     """
     if(window_index+window_width > len(price_data)):
         raise Exception("Invalid window width and/or index. Window outside price data series...")
-    # TODO: currently using append which is amortized O(1), not true O(1). Better would be to allocate list of length window_width right away and then fill it, thus making loop true O(n) instead of amortized
-    # TODO: even better, switch to pd.Series.apply() as it seems like it is more optimized https://towardsdatascience.com/400x-time-faster-pandas-data-frame-iteration-16fb47871a0a
     o = []
 
     prev_daily_price = -1
