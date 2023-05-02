@@ -104,7 +104,7 @@ def volatility(price_data: pd.Series, window_width: int, window_index: int = 0) 
     
 def sharpe_ratio(price_data_asset: pd.Series, price_data_benchmark: pd.Series, window_width: int, window_index: int = 0) -> float:
     """
-    Computes sharpe_ratio over a period between asset and benchamrk asset
+    Computes sharpe_ratio over a period between asset and benchamrk asset. O(window_width)
     
     Parameters:
         price_data_asset (pd.Series): Daily price data of asset
