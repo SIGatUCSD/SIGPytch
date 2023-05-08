@@ -111,7 +111,7 @@ def sharpe_ratio(price_data_asset: pd.Series, price_data_benchmark: pd.Series, w
         window_index (int): Start index of the window
         window_width (int): Width of the window
     Returns:
-        flaot: Sharpe ratio between asset and the benchmark asset
+        float: Sharpe ratio between asset and the benchmark asset
     """
     returns_asset = return_daily(price_data_asset, window_width, window_index)
     returns_benchmark = return_daily(price_data_benchmark, window_width, window_index)
