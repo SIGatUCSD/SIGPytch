@@ -98,13 +98,12 @@ def volatility(price_data: pd.Series, window_width: int, window_index: int = 0) 
     
     av_returns = return_average(price_data, window_width, window_index)
     dly_returns = return_daily(price_data, window_width, window_index)
-    T = window_width
-    sigma = dly_returns.apply(lambda daily_return: ((daily_return - av_returns)**2)/T).sum()
+    sigma = (dly_returns - av_returns).std()
     return sigma
     
 def sharpe_ratio(price_data_asset: pd.Series, price_data_benchmark: pd.Series, window_width: int, window_index: int = 0) -> float:
     """
-    Computes sharpe_ratio over a period between asset and benchamrk asset. O(window_width)
+    Computes sharpe_ratio over a period between asset and benchamrk asset. O()
     
     Parameters:
         price_data_asset (pd.Series): Daily price data of asset
@@ -116,12 +115,8 @@ def sharpe_ratio(price_data_asset: pd.Series, price_data_benchmark: pd.Series, w
     """
     returns_asset = return_daily(price_data_asset, window_width, window_index)
     returns_benchmark = return_daily(price_data_benchmark, window_width, window_index)
-    T = window_width
-    D_t = pd.Series()
-    for return_asset, return_benchmark in returns_asset, returns_benchmark:
-        D_t.add(return_asset - return_benchmark)
+    D_t = returns_asset - returns_benchmark
     D_avr = D_t.mean()
-
-    D_sigma = (D_t.apply(lambda D: (D-D_avr)**2).sum()/(T-1))**(1/2)
+    D_sigma = volatility(D_t, window_width, window_index)
     return D_avr/D_sigma
     
