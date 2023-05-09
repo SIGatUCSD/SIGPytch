@@ -1,6 +1,5 @@
 dist/
 sigpytch.egg-info/
-*.ipynb
 __pycache__/
 .venv/
 tests/refinitiv-data.config.json
