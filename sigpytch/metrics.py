@@ -26,21 +26,41 @@ def rolling_sharpe(daily_returns: pd.Series,
     rolling_sharpe_ratio = (avg_diff_return / periodized_volatility).dropna()
     return rolling_sharpe_ratio
 
-def max_drawdown(daily_returns: pd.Series, window: int = 252) -> pd.Series:
+def max_drawdown(close: pd.Series, window: int = 252) -> pd.Series:
     """
     Computes the max drawdown for a given ticker.
     
     Parameters:
-        daily_returns (pd.Series): Daily returns of the given ticker 
+        close (pd.Series): Daily closing price of the given ticker 
         window (int): Window size in trading days
     Returns:
         pd.Series: Max drawdown
     """
     # Compute drawdown based on max price in window
-    roll_max = daily_returns.rolling(window, min_periods=1).max()
-    drawdown = daily_returns/roll_max - 1.0
+    roll_max = close.rolling(window, min_periods=1).max()
+    drawdown = close/roll_max - 1.0
     max_drawdown = drawdown.rolling(window, min_periods=1).min()
     return max_drawdown
+
+def calmar(daily_returns: pd.Series, risk_free_rate: pd.Series, window: int = 6) -> pd.Series:
+    """
+    Computes the rolling Calmar ratio for a given ticker.
+    
+    Parameters:
+        daily_returns (pd.Series): Daily returns of the given ticker 
+        window (int): Window size in months
+    Returns:
+        pd.Series: Rolling Calmar ratio
+    """
+    # Compute sigma
+    avg_return = daily_returns.rolling(window = window * P.TDAYS_PER_MONTH).mean()
+    periodized_avg_return = avg_return * window * P.TDAYS_PER_MONTH
+    avg_diff_return = periodized_avg_return - risk_free_rate
+    # Compute max drawdown
+    max_draw = max_drawdown(daily_returns, window)
+    # Compute rolling Calmar ratio: D-bar / max_drawdown
+    calmars = (avg_diff_return/abs(max_draw)).dropna()
+    return calmars
 
 def return_average(price_data: pd.Series, window_width: int, window_index: int = 0) -> float:
     """
