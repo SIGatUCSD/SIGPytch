@@ -100,3 +100,16 @@ def volatility(price_data: pd.Series, window_width: int, window_index: int = 0) 
         sigma += ((daily_return - av_returns)**2)/T
     return sigma
     
+def rmse(obs: np.array, preds: np.array) -> float:
+    """
+    Calculates root mean squared error for two array-likes
+
+    Parameters:
+        obs: Array-like containing observed values
+        preds: Array-like containing predictions
+    Returns:
+        float: Root mean squared error of the two array-likes
+    """
+    
+    # calculates RMSE
+    return np.sqrt(np.mean((obs - preds) ** 2))
