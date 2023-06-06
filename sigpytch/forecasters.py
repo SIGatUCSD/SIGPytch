@@ -119,13 +119,13 @@ class ARIMAForecaster():
         
         preds = fitted_model.forecast(len(self.test)).to_numpy()
         
-        self.model = ARIMA(self.series, order=(5, 2, 2)).fit()
+        self.model = ARIMA(self.__series, order=(5, 2, 2)).fit()
         
         return preds
     
     def validate(self, preds: np.array) -> pd.DataFrame:
         
-        df = pd.DataFrame(self.series)
+        df = pd.DataFrame(self.__series)
         df["Predictions"] = pd.Series(preds, index=self.test.index)
         return df
     
@@ -133,9 +133,6 @@ class ARIMAForecaster():
         
         # creates dataframe from observed data
         df = self.__series.to_frame()
-        
-        # creates confidence_interval
-        ci = self.model.get_forecast(n).conf_int(alpha=0.01)
         
         # adds prediction column to our datafram
         nulls = np.empty(df.shape[0])
@@ -147,7 +144,17 @@ class ARIMAForecaster():
         for i in range(n):
             df.loc[df.index[-1] + pd.Timedelta('1day')] = [np.NaN, fc[i]]
         
-        ci.index = df.index[-n:]
+        return df
+    
+    def generate_ci(self, info: pd.DataFrame, n: int, alpha:int =0.05):
+
+        # creates copy of the dataframe
+        df = info.copy()
+        
+        # generates confidence interval
+        
+        ci = self.model.get_forecast(n).conf_int(alpha=alpha)
+        ci.index = info.index[-n:]
         
         df["Lower Bound"] = ci["lower Close"]
         df["Upper Bound"] = ci["upper Close"]  
