@@ -3,8 +3,19 @@ import pandas as pd
 
 from periods import P
 
+def get_returns(close):
+    """
+    Computes daily returns of a given ticker.
+    
+    Parameters:
+        close (pd.Series): Daily closing price of the given ticker 
+    Returns:
+        pd.Series: Daily returns
+    """
+    return close.pct_change().dropna()
+
 def rolling_sharpe(daily_returns: pd.Series,
-                   risk_free_rate: pd.Series, window: int) -> pd.Series:
+                   risk_free_rate: pd.Series, window: int = 6) -> pd.Series:
     """
     Computes the rolling Sharpe ratio for a given ticker and risk-free rate.
     
