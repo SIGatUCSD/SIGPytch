@@ -3,6 +3,19 @@ import pandas as pd
 
 from periods import P
 
+def rolling(metric, daily_returns: pd.Series,
+                   risk_free_rate: pd.Series, window: int = 6):
+    """
+    Returns rolling values of a metric model based on a window.
+    
+    Parameters:
+        metric (function): Metric function used for rolling.
+        window (int): Window size in months.
+    Returns:
+        pd.Series: Rolling values based on the function.
+    """
+    return metric(daily_returns, risk_free_rate, window)
+
 def get_returns(close):
     """
     Computes daily returns of a given ticker.
