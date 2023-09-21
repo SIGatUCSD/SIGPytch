@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
+import yfinance as yf
 
-from periods import P
+from periods import *
 
 def rolling(metric, daily_returns: pd.Series,
                    risk_free_rate: pd.Series, window: int = 6):
@@ -144,3 +145,88 @@ def volatility(price_data: pd.Series, window_width: int, window_index: int = 0) 
         sigma += ((daily_return - av_returns)**2)/T
     return sigma
     
+def rmse(obs: np.array, preds: np.array) -> float:
+    """
+    Calculates root mean squared error for two array-likes
+
+    Parameters:
+        obs: Array-like containing observed values
+        preds: Array-like containing predictions
+    Returns:
+        float: Root mean squared error of the two array-likes
+    """
+    
+    # calculates RMSE
+    return np.sqrt(np.mean((obs - preds) ** 2))
+
+def beta(obs: np.array = None, benchmark: np.array = None, ticker: str = None) -> float:
+    """
+    Calculates the beta ratio for a stock and a given index
+
+    Parameters:
+        obs (np.array): an array-like containing price data for the stock
+        benchmark (np.array): an array-like containing price data for the index/benchmark
+        ticker (str): Ticker symbol of a stock
+    Returns:
+        float: The beta ratio which measures volatilty of a stock relative to the market
+    """
+    
+    # raises error if all args are None
+    if obs is None:
+        # loads monthly data of a ticker if no data is passed
+        try:
+            obs = yf.Ticker(ticker).history(start=DATE.START).Close[::INTERVALS.MONTHLY]
+        except:
+            raise ValueError("Must have a valid Ticker symbol")
+        
+    # loads monthly S&P 500 data as the benchmark by default
+    if benchmark is None:
+        benchmark = yf.Ticker("^GSPC").history(start=DATE.START).Close[::INTERVALS.MONTHLY]
+    
+    # loads data of a ticker if no data is passed
+    if obs is None:
+        obs = yf.Ticker(ticker).history(start=DATE.START).Close[::INTERVALS.MONTHLY]
+    
+    # standardizes data
+    obs = obs.pct_change().dropna()
+    benchmark = benchmark.pct_change().dropna()
+    
+    # calculates Beta
+    return np.round(np.cov(obs, benchmark)[0, 1] / np.var(benchmark), 2)
+
+def alpha(ticker: str = None, benchmark: np.array = None, rf: np.array = None) -> float:
+    """
+    Calculates the alpha ratio for a stock and a given index
+
+    Parameters:
+        obs (np.array): an array-like containing price data for the stock
+        benchmark (np.array): an array-like containing price data for the index
+        rf (np.array): an array-like containing data for the risk-free index
+        ticker (str): a Ticker symbol
+    Returns:
+        float: The alpha ratio which measures excess returns of a stock relative to the market
+    """
+    
+    # raises ValueError if no valid Ticker is passed
+    if ticker is None:
+        raise ValueError("Must be a valid Ticker symbol")
+    
+    # generates risk-free index data using 30-yr treasuries by default
+    if rf is None:
+        rf = yf.Ticker("^TYX").history(start=DATE.START).Close
+        
+    # loads monthly S&P 500 data as the benchmark by default
+    if benchmark is None:
+        benchmark = yf.Ticker("^GSPC").history(start=DATE.START).Close
+        
+    # generates stock data from Ticker symbol
+    obs = yf.Ticker(ticker).history(start=DATE.START).Close
+    
+    # generates returns for the period for each array-like
+    returns = obs.iloc[-1] / obs.iloc[0]
+    
+    rfr = rf.iloc[-1] / rf.iloc[0]
+    
+    index_returns = benchmark.iloc[-1] / benchmark.iloc[0]
+    
+    return returns - rfr - (beta(ticker="MSFT") * (index_returns - rfr))

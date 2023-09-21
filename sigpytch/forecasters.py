@@ -1,3 +1,5 @@
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 import numpy as np
 import pandas as pd
 from pandas.tseries.offsets import BDay
@@ -5,6 +7,8 @@ import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import train_test_split
+from statsmodels.tsa.arima.model import ARIMA
 
 from .periods import P
 
@@ -92,3 +96,67 @@ class LSTMForecaster():
         df_fcst['Forecast'] = empty_list
         df_fcst['Forecast'][-self.forecast_len: ] = fcst_unscaled
         return df_fcst
+
+class ARIMAForecaster():
+    
+    def __init__(self, series: pd.Series):
+        self.__series = series
+        self.model = None
+        self.train = None
+        self.test = None
+        
+    def process_data(self):
+        train, test = train_test_split(self.__series, train_size=0.75)
+        self.train = train
+        self.test = test
+        
+    def fit_model(self) -> np.array:
+        
+        # initializes ARIMA model
+        model = ARIMA(self.train, order=(5, 2, 2))
+        
+        fitted_model = model.fit()
+        
+        preds = fitted_model.forecast(len(self.test)).to_numpy()
+        
+        self.model = ARIMA(self.__series, order=(5, 2, 2)).fit()
+        
+        return preds
+    
+    def validate(self, preds: np.array) -> pd.DataFrame:
+        
+        df = pd.DataFrame(self.__series)
+        df["Predictions"] = pd.Series(preds, index=self.test.index)
+        return df
+    
+    def forecast(self, n: int):
+        
+        # creates dataframe from observed data
+        df = self.__series.to_frame()
+        
+        # adds prediction column to our datafram
+        nulls = np.empty(df.shape[0])
+        nulls[:] = np.NaN
+        df["Predictions"] = nulls
+        
+        # forecasts n steps
+        fc = self.model.forecast(n, alpha=0.05).to_numpy()
+        for i in range(n):
+            df.loc[df.index[-1] + pd.Timedelta('1day')] = [np.NaN, fc[i]]
+        
+        return df
+    
+    def generate_ci(self, info: pd.DataFrame, n: int, alpha:int =0.05):
+
+        # creates copy of the dataframe
+        df = info.copy()
+        
+        # generates confidence interval
+        
+        ci = self.model.get_forecast(n).conf_int(alpha=alpha)
+        ci.index = info.index[-n:]
+        
+        df["Lower Bound"] = ci["lower Close"]
+        df["Upper Bound"] = ci["upper Close"]  
+        
+        return df
